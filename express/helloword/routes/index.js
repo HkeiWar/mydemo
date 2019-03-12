@@ -13,17 +13,31 @@ router.get('/', function (req, res, next) {
 router.get('/addres', function (req, res, next) {
   let pro = req.query.pro || ""
   let result = {
-    status : 0,
-    msg : "查询成功！",
-    data:{}
+    status: 0,
+    msg: "查询成功！",
+    data: {}
   }
   let array = []
-  pcasv.forEach(element => {
-    if (element.value === pro || element.label.indexOf(pro) > 0) {
-      array.push(element)
+  pcasv.forEach(province => { //循环省
+    if (province.value.match(pro)) {
+      array.push(province)
     }
+    province.children.forEach( //循环市
+      city => {
+        if (city.value.match(pro)) {
+          array.push(city)
+        }
+        city.children.forEach( //循环区
+          area => {
+            if (area.value.match(pro)) {
+              array.push(area)
+            }
+          }
+        )
+      }
+    )
   });
-  if(array.length > 0){
+  if (array.length > 0) {
     result.data = array;
   }
   res.json(result);
