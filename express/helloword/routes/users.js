@@ -1,29 +1,98 @@
 var express = require('express');
 var router = express.Router();
-
 var mongoose = require('mongoose');
 
-// 连接数据库 如果不自己创建 默认test数据库会自动生成
-mongoose.createConnection('mongodb://localhost:27017/books')
-var Schema = mongoose.Schema;
-// 为这次连接绑定事件
-const db = mongoose.connection
-db.once('error', () => console.log('Mongo connection error'))
-db.once('open', () => console.log('Mongo connection successed'))
-/************** 定义模式loginSchema **************/
-const person = new Schema({
-  userId: Number,
-  userName: String,
-  password: String
-});
- 
 /************** 定义模型Model **************/
-const user = mongoose.model('user', person)
+const User = mongoose.model('user', new mongoose.Schema({
+  userId: { type: Number, require: true },
+  userName: { type: String, require: true },
+  password: { type: String, require: true }
+}))
 
-/* GET users listing. */
-router.get('/', function(req, res, next) {
-  user.find({}, function(err, result) { if (err) { console.log(err); } else { console.log("成功"); res.json(result);} })
-  res.send('respond with a resource');
+mongoose.connect('mongodb://localhost:27017/books').then(() => {
+  console.log('数据库连接成功！')
+}).catch(err => {
+  console.log(err)
+})
+
+/**
+ * 获取所有数据
+ */
+router.get('/users', function (req, res, next) {
+  User.find({}, function (err, doc) {
+    res.json({status:0,msg:"查询成功！",data:doc})
+  })
+});
+
+/**
+ * 获取单条数据
+ */
+router.get('/user/:id', function (req, res, next) {
+  User.findOne({userId:req.params.id}, function (err, doc) {
+    res.json({status:0,msg:"查询成功！",data:doc})
+  })
+});
+
+/**
+ * 删除数据
+ */
+router.delete('/user/:id', function (req, res, next) {
+  let result = {
+    status : 0,
+    msg : "操作成功！"
+  }
+  User.remove({userId:req.params.id}, function (err, doc) {
+    if (!err) {
+      res.json(result)
+    } else {
+      console.log(err);
+      result.status = 1;
+      result.msg = "操作失败！";
+      res.json(result)
+    }
+  });
+});
+
+/**
+ * 修改数据
+ */
+router.put('/user', function (req, res, next) {
+  let result = {
+    status : 0,
+    msg : "操作成功！"
+  }
+  console.log(req.body)
+  User.update({userName:"test"},{$set:{userId:1}}, function (err, doc) {
+    if (!err) {
+      console.log(doc)
+      res.json(result)
+    } else {
+      console.log(err);
+      result.status = 1;
+      result.msg = "操作失败！";
+      res.json(result)
+    }
+  });
+});
+
+/**
+ * 添加数据
+ */
+router.post('/user', function (req, res, next) {
+  let result = {
+    status : 0,
+    msg : "操作成功！"
+  }
+  User.create(req.body, function (err, doc) {
+    if (!err) {
+      res.json(result)
+    } else {
+      console.log(err);
+      result.status = 1;
+      result.msg = "操作失败！";
+      res.json(result)
+    }
+  });
 });
 
 module.exports = router;

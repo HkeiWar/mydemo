@@ -58,3 +58,78 @@ router.get('/test', function(req, res, next) {
 });
 ```
 
+### 连接mongodb数据库
+
+#### 安装驱动
+```
+npm install mongoose --save
+```
+
+#### 导入模块
+```
+var mongoose = require('mongoose');
+```
+
+#### 连接数据库
+```
+mongoose.connect('mongodb://localhost:27017/books').then(() => {
+  console.log('数据库连接成功！')
+}).catch(err => {
+  console.log(err)
+})
+```
+
+#### 定义数据模型
+```
+/************** 定义模型Model **************/
+const User = mongoose.model('user', new mongoose.Schema({
+  userId: { type: Number, require: true },
+  userName: { type: String, require: true },
+  password: { type: String, require: true }
+}))
+```
+
+#### 数据库操作
+
+查询所有数据
+```
+User.find({}, function (err, doc) {  
+    res.json(doc)//返回json
+  })
+```
+
+获取单条数据
+```
+User.findOne({userId:req.params.id}, function (err, doc) {
+    res.json(doc)
+  })
+```
+
+添加数据
+```
+let data = { userId: 2, userName: "test", password: "123456" };
+User.create(data, function (err, doc) {
+    if (!err) {
+      res.json(result)
+    } else {
+      console.log(err);
+      result.status = 1;
+      result.msg = "操作失败！";
+      res.json(result)
+    }
+  });
+```
+
+删除数据
+```
+User.remove({userId:2}, function (err, doc) {
+    if (!err) {
+      res.json(result)
+    } else {
+      console.log(err);
+      result.status = 1;
+      result.msg = "操作失败！";
+      res.json(result)
+    }
+  });
+```
