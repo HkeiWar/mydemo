@@ -62,7 +62,7 @@ router.put('/user', function (req, res, next) {
     msg : "操作成功！"
   }
   console.log(req.body)
-  User.update({userName:"test"},{$set:{userId:1}}, function (err, doc) {
+  User.update({userId:req.body.userId},{$set:req.body}, function (err, doc) {
     if (!err) {
       console.log(doc)
       res.json(result)

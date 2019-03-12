@@ -133,3 +133,19 @@ User.remove({userId:2}, function (err, doc) {
     }
   });
 ```
+
+修改数据
+```
+//User.update("修改条件",{$set:"修改的值"}
+User.update({userId:req.body.userId},{$set:req.body}, function (err, doc) {
+    if (!err) {
+      console.log(doc)
+      res.json(result)
+    } else {
+      console.log(err);
+      result.status = 1;
+      result.msg = "操作失败！";
+      res.json(result)
+    }
+  });
+```
