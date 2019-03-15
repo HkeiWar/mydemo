@@ -53,3 +53,26 @@ for(let index = 0; index < array.lenght; index++){
     console.log(array[index].age); // 控制台输出数组的对象里每个年龄
 }
 ```
+
+实战：
+```
+let array = [
+    {
+        name:"h1",
+        age:18
+    },
+    {
+        name:"h2",
+        age:16
+    },
+    {
+        name:"h3",
+        age:26
+    }]
+for(let index = 0; index < array.lenght; index++){
+    if(array[index].age < 20){ // 判断是否小于20岁 小于输出
+        console.log(array[index].name); // 控制台输出小于20岁的人
+    }
+    
+} 
+```
